@@ -1,7 +1,7 @@
 @extends('admin.layout.default')
 
 @section('css')
-	<link href="{{ asset('plugins/sweetalert/sweetalert.css') }}" rel="stylesheet" />
+  <link href="{{ asset('plugins/sweetalert/sweetalert.css') }}" rel="stylesheet" />
     <link type="text/css" rel="stylesheet" href="{{ asset('plugins/datatable/jquery.dataTables.min.css') }}">
     <link type="text/css" rel="stylesheet" href="{{ asset('plugins/datatable/select.dataTables.min.css') }}">
 @endsection
@@ -23,8 +23,8 @@
 @endsection
 
 @section('content')
-
-<div id="modal1" class="modal modal-fixed-footer  ">
+<!-- 
+                <div id="modal1" class="modal modal-fixed-footer meduim">
                   <div class="modal-content">
                       <div class="col s12">
                           <h5>Add Loan Type</h5>
@@ -59,6 +59,32 @@
                       
                       <a href="javascript:void(0);" class="btn-flat" >Add</a>
                   </div>
+              </div> -->
+
+              <div id="modal1" class="modal modal-fixed-footer medium">
+                <div class="modal-content">
+                  <div class="col s12">
+                    <h5>Add Loan type</h5>
+                  </div>
+                  <form @submit.prevent="isNotValidateForm" name="callback" class="col s12">
+                    <div class="input-field">
+                      <input type="text" id="loan-name" name="loan-name" >
+                      <label for="loan-name">Loan type name</label>
+                    </div>
+                    <div class="input-field">
+                      <input type="text" id="percent" name="percent" >
+                      <label for="percent">Percent(%)</label>
+                    </div>
+                    <div class="input-field">
+                      <input type="text" id="maxterms" name="maxterms" >
+                      <label for="maxterms">Max terms of payment()</label>
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <a href="javascript:void(0);" class="modal-action modal-close waves-effect waves-green btn-flat">Close</a> 
+                  <a href="javascript:void(0);" class="btn-flat" >Add</a>
+                </div>
               </div>
 
 <div class="main-container">
