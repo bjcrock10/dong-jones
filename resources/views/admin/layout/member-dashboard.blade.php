@@ -28,6 +28,7 @@
         <!-- Styles -->
         <link rel="stylesheet" href="{{ asset('css/dynamic.css') }}">
         <link rel="stylesheet" href="{{ asset('plugins/scrollbar/perfect-scrollbar.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('plugins/jquery.numbox-1.2.0/jquery.numbox-1.2.0.css') }}">
         <link href="{{ asset('css/admin/app.css') }}" rel="stylesheet">
         <link href="{{ asset('css/admin/materialdesignicons.min.css') }}" rel="stylesheet">
         @yield('css')
@@ -56,6 +57,8 @@
         {{-- APP AND INIT --}}
         <script src="{{ asset('js/forgeapp.js') }}"></script>
         <script src="{{ asset('js/init.js') }}"></script>
+        <script src="{{ asset('plugins/formatter/formatter.js')}}"></script>
+        <script src="{{ asset('plugins/jquery.numbox-1.2.0/jquery.numbox-1.2.0.min.js')}}"></script>
         @yield('jsPostApp')
     </body>
 </html>

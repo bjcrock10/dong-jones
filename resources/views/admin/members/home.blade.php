@@ -18,6 +18,7 @@
         $(document).ready(function() {
             $('.modal').modal();
             $('select').material_select();
+            $('.inputUSD').NumBox({ symbol: ''});
         } );
     </script>
 @endsection
@@ -40,14 +41,14 @@
            <!--   <button class="btn-floating right waves-effect set-top-right" data-target="modal1" ><i class="material-icons right">add</i></button> -->
 
                 <img class="circle responsive-img round-img" src="../../images/placeholder/1280x853g.jpg" alt="placeholder">
-                <div class="card-title center">Mary Watson</div>
-                <div class="designation center grey-text text-darken-3">Co-Founder</div>
+                <div class="card-title center">{{Auth::user()->name}}</div>
+                <div class="designation center grey-text text-darken-3">{{Auth::user()->designation}}</div>
 
                 <div class="socialization center">
                   <a class="waves-effect waves-light btn-large"  data-target="modal1"><i class="material-icons left">add</i>Apply new loan</a>
                   <!-- <a class="btn-floating  grey darken-3 btn-flat waves-effect waves-light" href="#!"><i class="material-icons">add</i></a> --> </div>
               </div>
-              <div class="card-reveal"><span class="card-title grey-text text-darken-4">Mary Watson<i class="material-icons right">close</i></span>
+              <div class="card-reveal"><span class="card-title grey-text text-darken-4">{{Auth::user()->name}}<i class="material-icons right">close</i></span>
                 <p>Here is some more information about this product that is only revealed once clicked on.</p>
               </div>
             </div>
@@ -238,15 +239,40 @@
                                         <div class="col s12 m4">
 
                                             <ul class="collection">
-                                              <li class="collection-item">Shared capital x 2 <span class="right"><span>&#8369;</span> 12,000</span></li>
-                                              <li class="collection-item">
+                                              <li class="mr-top-10">
+                                                  <div class="input-field col s12 m12">
+                                                          <input type="number" name="sharecapitalx2" class="inputUSD right-align" value="{{(Auth::user()->sharecapital)*2}}"/>
+                                                          <label for="inputUSD">Share Capital x 2</label>
+                                                  </div>
+                                              </li>
+                                              <li class="mr-top-10">
                                                 Loan Balances
                                                   <ol>
-                                                      <li class="mr-top-10">Regular <span class="right"> <span>&#8369;</span>12,000</span></li>
-                                                      <li class="mr-top-10">Petty Cash<span class="right"> <span>&#8369;</span>12,000</span></li>
-                                                      <li class="mr-top-10">Emergency<span class="right"> <span>&#8369;</span>12,000</span></li>
-                                                      <li class="mr-top-10">Commodity<span class="right"> <span>&#8369;</span>12,000</span></li>
-                                                      <li class="mr-top-10">Other ST:<span class="right"> <span>&#8369;</span>12,000</span></li>
+                                                      <li class="mr-top-10">
+                                                        <div class="input-field col s12 m12">
+                                                          <input type="number" name="totalregularloan" class="inputUSD right-align" value="{{Auth::user()->totalregularloan}}"/>
+                                                          <label for="inputUSD">Regular Loan</label>
+                                                        </div>
+                                                      </li>
+                                                      <li class="mr-top-10">
+                                                        <div class="input-field col s12 m12">
+                                                          <input type="number" name="totalpettycashloan" class="inputUSD right-align" value="{{Auth::user()->totalpettycashloan}}"/>
+                                                          <label for="inputUSD">Petty Cash Loan</label>
+                                                        </div>
+                                                      </li>
+                                                      <li class="mr-top-10">
+                                                        <div class="input-field col s12 m12">
+                                                          <input type="number" name="totalemergencyloan" class="inputUSD right-align" value="{{Auth::user()->totalemergencyloan}}"/>
+                                                          <label for="inputUSD">Emergency Loan</label>
+                                                        </div>
+                                                      </li>
+                                                      <li class="mr-top-10">
+                                                        <div class="input-field col s12 m12">
+                                                          <input type="number" name="totalcommodityloan" class="inputUSD right-align" value="{{Auth::user()->totalcommodityloan}}"/>
+                                                          <label for="inputUSD">Commodity Loan</label>
+                                                        </div>
+                                                      </li>
+                                                      
                                                   </ol>
                                               </li>
                                               <li class="collection-item">Total Loan<span class="right"> <span>&#8369;</span>12,000</span></li>
