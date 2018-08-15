@@ -150,13 +150,7 @@
                                     </select>
                                     <label for="sex">Loan Status</label>
                                   </div>
-                                </div>  
-                                <div class="row">
-                                  <div class="input-field col s12"><i class="material-icons prefix"><span>&#8369;</span></i>
-                                    <input class="validate" type="text" id="loanamount" name="loanamount" value="">
-                                    <label for="loanamount">Amount in figures</label>
-                                  </div>
-                                </div>  
+                                </div>
                                 <div class="row">
                                   <div class="input-field col m6 s12"><i class="material-icons prefix">date_range</i>
                                     <select class="basic-select" name="loanterms" id="loanterms">
@@ -218,14 +212,6 @@
                                     <label for="email">Amount of fixed deposit</label>
                                   </div>
                                 </div>
-                                
-                                <div class="row">
-                                    <div class="input-field col s12">
-                                        <input type="checkbox" id="filled-in" class="filled-in"/>
-                                        <label for="filled-in">Accept terms and agreement </label>
-                                    </div>
-
-                                </div>
                             </div>
                         </div>
                         <div class="row ">
@@ -250,7 +236,7 @@
                                                   <ol>
                                                       <li class="mr-top-10">
                                                         <div class="input-field col s12 m12">
-                                                          <input type="number" name="totalregularloan" class="inputUSD right-align" value="{{Auth::user()->totalregularloan}}"   />
+                                                          <input type="number" name="totalregularloan" class="inputUSD right-align" value="{{Auth::user()->totalregularloan}}" readonly />
                                                           <label for="totalregularloan">Regular Loan</label>
                                                         </div>
                                                       </li>
@@ -290,7 +276,14 @@
                                         </div>
                                         <div class="col s12 m4">
                                             <ul class="collection">
-                                              <li class="collection-item">Loan Amount<span class="right"><span>&#8369;</span> 12,000</span></li>
+                                              <li class="mr-top-10">
+                                                
+                                                  <div class="input-field col s12"><i class="material-icons prefix"><span>&#8369;</span></i>
+                                                    <input type="number" class="inputUSD right-align validate" id="loanamount" name="loanamount" value="">
+                                                    <label for="loanamount">Amount in figures</label>
+                                                  </div>
+                                              
+                                              </li>
                                               <li class="collection-item">
                                                 Loan Balances
                                                   <ol>
@@ -300,7 +293,7 @@
                                                   <ol>
                                                       <li class="mr-top-10">Amount <span class="right"><span>&#8369;</span> 12,000</span></li>
                                                   </ol>
-                                                  Other Fee
+                                                  Service Fee
                                                   <ol>
                                                       <li class="mr-top-10">Amount <span class="right"><span>&#8369;</span> 12,000</span></li>
                                                   </ol>
@@ -361,6 +354,9 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                                        <input type="checkbox" id="filled-in" class="filled-in"/>
+                                        <label for="filled-in">Accept terms and agreement </label>
+                                    
                         <button class="btn waves-effect waves-set" type="submit" name="update_profile">Save<i class="material-icons right">save</i>
                                 </button>
                     </div>
