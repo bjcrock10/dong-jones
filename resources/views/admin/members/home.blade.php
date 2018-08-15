@@ -138,34 +138,34 @@
                                 </div>
                                 <div class="row">
                                   <div class="input-field col m6 s12"><i class="material-icons prefix">calendar_today</i>
-                                    <input type="date" class="validate datepicker pck-primary pck-darken-*" id="bdate" name="bdate" value="" required />
-                                    <label for="bdate">Date of filing</label>
+                                    <input type="date" class="validate datepicker pck-primary pck-darken-*" id="datefiling" name="datefiling" value="" required />
+                                    <label for="datefiling">Date of filing</label>
                                   </div>
                                   <div class="input-field col m6 s12"><i class="material-icons prefix">description</i>
                                     <select class="basic-select" name="loanstatus" id="loanstatus">
                                       <option value="" disabled selected>Select Loan Status</option>
-                                      <option value="MALE" selected>New loan</option>
-                                      <option value="MALE" selected>Renewal</option>
+                                      <option value="New Loan" selected>New loan</option>
+                                      <option value="Renewal" selected>Renewal</option>
                                     </select>
                                     <label for="sex">Loan Status</label>
                                   </div>
                                 </div>  
                                 <div class="row">
                                   <div class="input-field col s12"><i class="material-icons prefix"><span>&#8369;</span></i>
-                                    <input class="validate" type="email" id="email" name="email" value="">
-                                    <label for="email">Amount in figures</label>
+                                    <input class="validate" type="text" id="loanamount" name="loanamount" value="">
+                                    <label for="loanamount">Amount in figures</label>
                                   </div>
                                 </div>  
                                 <div class="row">
                                   <div class="input-field col m6 s12"><i class="material-icons prefix">date_range</i>
-                                    <select class="basic-select" name="sex" id="sex">
-                                      <option value="" disabled selected>Select Loan Status</option>
-                                      <option value="MALE" selected>Three(3) months</option>
+                                    <select class="basic-select" name="loanterms" id="loanterms">
+                                      <option value="" disabled selected>Select Loan Terms</option>
+                                      <option value="3" selected>Three(3) months</option>
                                     </select>
                                     <label for="sex">Terms of payment</label>
                                   </div>
                                   <div class="input-field col m6 s12"><i class="material-icons prefix">assignment</i>
-                                    <select class="basic-select" name="sex" id="sex">
+                                    <select class="basic-select" name="loantype" id="loantype">
                                       <option value="" disabled selected>Select Loan Status</option>
                                       <option value="MALE" selected>Regular loan</option>
                                     </select>
@@ -174,8 +174,8 @@
                                 </div> 
                                 <div class="row">
                                   <div class="input-field col s12"><i class="material-icons prefix">lock</i>
-                                    <input class="validate" type="email" id="email" name="email" value="">
-                                    <label for="email">Signature key</label>
+                                    <input class="validate" type="text" id="signaturekey1" name="signaturekey1" value="">
+                                    <label for="signaturekey1">Signature key</label>
                                   </div>
                                 </div> 
                               <!--   <div class="row">
@@ -193,23 +193,23 @@
                                 </div>
                                 <div class="row">
                                   <div class="input-field col s12"><i class="material-icons prefix">lock</i>
-                                    <input class="validate" type="email" id="email" name="email" value="">
-                                    <label for="email">Signature key</label>
+                                    <input class="validate" type="text" id="signaturekey2" name="signaturekey2" value="">
+                                    <label for="signaturekey2">Signature key</label>
                                   </div>
                                 </div> 
                                 <div class="row">
                                   <div class="input-field col m7 s12"><i class="material-icons prefix">perm_identity</i>
-                                    <input class="validate" type="email" id="email" name="email" disabled="" value="">
-                                    <label for="email">Comaker's ID</label>
+                                    <input class="validate" type="email" id="coid" name="comakersid" disabled="" value="">
+                                    <label for="coid">Comaker's ID</label>
                                   </div>
                                   <div class="input-field col m5 s12"><i class="material-icons prefix">person</i>
-                                    <input class="validate" type="email" id="email" name="email" value="" disabled="">
-                                    <label for="email">Co-maker Name</label>
+                                    <input class="validate" type="text" id="coname" name="coname" value="" disabled="">
+                                    <label for="coname">Co-maker Name</label>
                                   </div>
                                 </div> 
                                 <div class="row">
                                   <div class="input-field col m7 s12"><i class="material-icons prefix">book</i>
-                                    <input class="validate" type="email" id="email" name="email" value="" disabled="">
+                                    <input class="validate" type="text" id="copassbookno" name="copassbookno" value="" disabled="">
                                     <label for="email">Passbook no.</label>
                                   </div>
                                   <div class="input-field col m5 s12"><i class="material-icons prefix"><span>&#8369;</span></i>
