@@ -18,7 +18,7 @@
         $(document).ready(function() {
             $('.modal').modal();
             $('select').material_select();
-            $('.inputUSD').NumBox({ symbol: ''});
+            $('.inputUSD').NumBox({ symbol: '', max:'10000000000'});
         } );
     </script>
 @endsection
@@ -242,7 +242,7 @@
                                               <li class="mr-top-10">
                                                   <div class="input-field col s12 m12">
                                                           <input type="number" name="sharecapitalx2" class="inputUSD right-align" value="{{(Auth::user()->sharecapital)*2}}"/>
-                                                          <label for="inputUSD">Share Capital x 2</label>
+                                                          <label for="sharecapitalx2">Share Capital x 2</label>
                                                   </div>
                                               </li>
                                               <li class="mr-top-10">
@@ -250,33 +250,42 @@
                                                   <ol>
                                                       <li class="mr-top-10">
                                                         <div class="input-field col s12 m12">
-                                                          <input type="number" name="totalregularloan" class="inputUSD right-align" value="{{Auth::user()->totalregularloan}}"/>
-                                                          <label for="inputUSD">Regular Loan</label>
+                                                          <input type="number" name="totalregularloan" class="inputUSD right-align" value="{{Auth::user()->totalregularloan}}"   />
+                                                          <label for="totalregularloan">Regular Loan</label>
                                                         </div>
                                                       </li>
                                                       <li class="mr-top-10">
                                                         <div class="input-field col s12 m12">
-                                                          <input type="number" name="totalpettycashloan" class="inputUSD right-align" value="{{Auth::user()->totalpettycashloan}}"/>
-                                                          <label for="inputUSD">Petty Cash Loan</label>
+                                                          <input type="number" name="totalpettycashloan" class="inputUSD right-align" value="{{Auth::user()->totalpettycashloan}}" readonly/>
+                                                          <label for="totalpettycashloan">Petty Cash Loan</label>
                                                         </div>
                                                       </li>
                                                       <li class="mr-top-10">
                                                         <div class="input-field col s12 m12">
-                                                          <input type="number" name="totalemergencyloan" class="inputUSD right-align" value="{{Auth::user()->totalemergencyloan}}"/>
-                                                          <label for="inputUSD">Emergency Loan</label>
+                                                          <input type="number" name="totalemergencyloan" class="inputUSD right-align" value="{{Auth::user()->totalemergencyloan}}" readonly/>
+                                                          <label for="totalemergencyloan">Emergency Loan</label>
                                                         </div>
                                                       </li>
                                                       <li class="mr-top-10">
                                                         <div class="input-field col s12 m12">
-                                                          <input type="number" name="totalcommodityloan" class="inputUSD right-align" value="{{Auth::user()->totalcommodityloan}}"/>
-                                                          <label for="inputUSD">Commodity Loan</label>
+                                                          <input type="number" name="totalcommodityloan" class="inputUSD right-align" value="{{Auth::user()->totalcommodityloan}}" readonly/>
+                                                          <label for="totalcommodityloan">Commodity Loan</label>
                                                         </div>
                                                       </li>
-                                                      
                                                   </ol>
                                               </li>
-                                              <li class="collection-item">Total Loan<span class="right"> <span>&#8369;</span>12,000</span></li>
-                                              <li class="collection-item">Loanable Amount<span class="right"> <span>&#8369;</span>12,000</span></li>
+                                              <li class="mr-top-10">
+                                                <div class="input-field col s12 m12">
+                                                    <input type="number" name="totalloans" class="inputUSD right-align" value="{{(Auth::user()->totalcommodityloan + Auth::user()->totalregularloan + Auth::user()->totalpettycashloan + Auth::user()->totalemergencyloan)}}" readonly/>
+                                                    <label for="inputUSD">Total Loans</label>
+                                                </div>
+                                              </li>
+                                              <li class="mr-top-10">
+                                                <div class="input-field col s12 m12">
+                                                    <input type="number" name="totalloanable" class="inputUSD right-align" value="{{(Auth::user()->sharecapital)*2 - 100}}" readonly/>
+                                                    <label for="inputUSD">Total Loanable Amount</label>
+                                                </div>
+                                              </li>
                                             </ul>
                                         </div>
                                         <div class="col s12 m4">
