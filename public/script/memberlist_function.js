@@ -51,7 +51,6 @@ $(function(){
 //
         $('#memberslist').DataTable().on('click','tr .edit',function(e){
              e.preventDefault();
-             $
              rowId='';
              rowId = $(this).closest('tr').find('td:eq(0)').text();
              var url="/admin/getmemberinfo/"+rowId;

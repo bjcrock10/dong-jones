@@ -9293,7 +9293,7 @@ input[type=search]:disabled,
 input[type=search][readonly="readonly"],
 textarea.materialize-textarea:disabled,
 textarea.materialize-textarea[readonly="readonly"] {
-  color: rgba(0, 0, 0, 0.5);
+  color: rgba(0, 0, 0, 1);
   border-bottom: 1px dotted rgba(0, 0, 0, 0.5);
 }
 

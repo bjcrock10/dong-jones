@@ -40,6 +40,22 @@ Route::post('/removemember/{id}','Admin\MembersController@destroy');
 Route::get('/getmemberinfo/{id}','Admin\MembersController@getinfo');
 //End of Members route
 
+//Loan Master Route
+Route::get('/loanapplicationpostsdata','Admin\LoanMasterController@postsdata');
+Route::post('/createloan','Admin\LoanMasterController@store');
+Route::post('/editloan/{refno}','Admin\LoanMasterController@loanupdate')->name('editloan');
+Route::post('/crecomloan/{refno}','Admin\LoanMasterController@crecomupdate');
+Route::post('/bodloan/{refno}','Admin\LoanMasterController@bodupdate');
+Route::post('/removeloan/{id}','Admin\LoanMasterController@destroy');
+Route::get('/getloaninfo/{id}','Admin\LoanMasterController@getinfo');
+Route::get('/getcalculate/{id}/{loantype}/{loanamount}','Admin\LoanMasterController@getcalculate');
+Route::get('/getloanhistory/{id}','Admin\LoanMasterController@getloanhistory');
+
+
+Route::get('/loanlistpostsdata','Admin\LoanMasterController@loanlistpostsdata');
+
+//End of Loan Master
+
 Route::get('/loanlist','Admin\AdminController@loanlistindex');
 
 Route::get('/agencylist','Admin\AdminController@agencylistindex');

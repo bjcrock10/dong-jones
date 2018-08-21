@@ -37,6 +37,12 @@ return [
     'member-status'      =>"Member's account (:status)status updated successfully",
     'member-update-fail' =>'Fail to update the record!',
 
+    'message-add'         =>'Inputs added successfully',
+    'message-empty-list'  =>'Please add an Inputs.',
+    'message-update'      =>'Inputs updated successfully',
+    'message-distroy'     =>'Inputs removed successfully',
+    'message-status'      =>"Inputs's account (:status)status updated successfully",
+    'message-update-fail' =>'Fail to update the record!',
 
     'user-add'         =>'User added successfully',
     'user-update'      =>'User updated successfully',

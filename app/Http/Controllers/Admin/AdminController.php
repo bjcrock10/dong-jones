@@ -32,7 +32,7 @@ class AdminController extends Controller
     public function index()
     {
         if (Gate::denies('developerOnly') && Gate::denies('admin.list')) {
-            return back();
+            return view('admin.members.home');
         }
         // If there is an Ajax request or any request wants json data
         if (request()->ajax() || request()->wantsJson()) {
@@ -82,9 +82,6 @@ class AdminController extends Controller
 
     public function memberdashboard(){
         // $data = collect();
-        if (Gate::denies('developerOnly') && Gate::denies('admin.home')) {
-            return back();
-        }
         return view('admin.members.home');
     }
 

@@ -26,10 +26,10 @@ class MembersController extends Controller
 
     public function postsdata(){
 
-        $trainings = Admin::where('status','active');
+        $memberlist = Admin::where('status','active');
 
-        return DataTables::of($trainings)
-                ->addcolumn("action",function($trainings){
+        return DataTables::of($memberlist)
+                ->addcolumn("action",function($memberlist){
                     return '<div class="action-btns">
                                   <button class="btn-floating warning-bg edit" data-target="modal1"><i class="material-icons">edit</i></button>
                                   <button class="btn-floating info-bg profile"><i class="material-icons">person</i></button>
@@ -63,7 +63,6 @@ class MembersController extends Controller
         $input['password']     = bcrypt($setPassword);
         $input['status']       = Admin::STATE_ACTIVE;
         $input['name']         = $request->fname. " " . $request->lname;
-        $input['sharecapital'] = removecomma();
         // Create Member
         $admin = $this->admin->create($input);
 

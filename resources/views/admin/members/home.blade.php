@@ -9,18 +9,145 @@
 
 @section('jsPostApp')
     
-    <script src="{{ asset('script/memberhome.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('plugins/datatable/jquery.dataTables.min.js') }}" type="text/javascript"></script>
-    <script type="text/javascript" src="{{ asset('plugins/datatable/dataTables.select.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('plugins/datatable/templates.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('plugins/datatable/using-api.js') }}"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function(){
+            var rowId='';
+            var flag='';
             $('.modal').modal();
             $('select').material_select();
-            $('.inputUSD').NumBox({ symbol: '', max:'10000000000'});
-        } );
+            $('.inputUSD').NumBox({ symbol: '', max:'2000000'});
+            $("#forma").on("submit",function(){
+               var url="/admin/createloan";
+                $.ajax({
+                  type:"POST",
+                  url: url,
+                  data: $(this).serialize(),
+                  dataType:'json',
+                  success: function(data){
+                    $('#modal1').modal("close");
+                  },
+                  error: function(data){
+                  }
+              });
+            });
+
+            $('#loanapplicationlist').DataTable({            
+               lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                ajax: '/admin/loanapplicationpostsdata',
+                stateSave: true,
+                columns : [
+                  { data: 'refno', name: 'refno' },
+                  { data: 'name', name: 'name' },
+                  { data: 'loanamount', name: 'loanamount' },
+                  { data: 'overallaction', name: 'overallaction' },
+                  { data: 'action', name: 'action', orderable : false, searchable: false},
+                ],
+              });
+
+            $("#signaturekey1").on("blur",function(){
+                 rowId='';
+                 rowId = $(this).val();
+                 interestamount =0;
+                 interestpercent=0;
+                 monthlyamort=0;
+                 totalamount=0;
+                 totalinterest=0;
+                 var url="/admin/getcalculate/"+rowId+"/"+$("#loantype").val()+"/"+$("#loanamount").val();
+                 $.ajaxSetup({
+                  header:$('meta[name="_token"').attr('contnen')
+                  })
+                  $.ajax({
+                    type:"GET",
+                    url: url,
+                    data: $(this).serialize(),
+                    dataType:'json',
+                    success: function(data){
+                      interestpercent = $("#loanterms").val();
+                      interestamount =data.loanamount * (1/100);
+                      totalinterest= parseFloat(interestamount * interestpercent);
+                      
+                      totalamount = parseFloat(data.loanamount) + parseFloat(totalinterest);
+                      monthlyamort = parseFloat(totalamount) / interestpercent;
+                      $("#priorloan").val(data.priorloan);
+                      $("#servicefee").val(data.servicefee);
+                      $("#retentionfee").val(data.retentionfee);
+                      $("#insurancefee").val(data.insurancefee);
+                      $("#totaldeductions").val(data.totaldeductions);
+                      $("#netproceeds").val(data.netproceeds);
+                      $("#interestpercent").val(interestpercent);
+                      $("#interestamount").val(interestamount);
+                      $("#totalinterest").val(totalinterest);
+                      $("#totalamount").val(totalamount);
+                      $("#monthlyamort").val(monthlyamort);
+                    },
+                    error: function(data){
+
+                    }
+                  });
+            });
+
+            $('#loanapplicationlist').DataTable().on('click','tr .edit',function(e){
+                e.preventDefault();
+                 rowId='';
+                 rowId = $(this).closest('tr').find('td:eq(0)').text();
+                 var url="/admin/getloanhistory/"+rowId;
+                 $.ajaxSetup({
+                  header:$('meta[name="_token"').attr('contnen')
+                  })
+                  e.preventDefault(e);
+                  $.ajax({
+                    type:"GET",
+                    url: url,
+                    data: $(this).serialize(),
+                    dataType:'json',
+                    success: function(data){
+                      $("#datefiling").val(data.datefiling);
+                      $("#loanstatus").val(data.loanstatus);
+                      $("#loanterms").val(data.loanterms);
+                      $("#loantype").val(data.loantype);
+                      $("#signaturekey2").val(data.signaturekey2);
+                      $("#signaturekey1").val(data.signaturekey1);
+
+                      $("#coid").val(data.coid);
+                      $("#coname").val(data.coname);
+                      $("#copassbookno").val(data.copassbookno);
+                      $("#cosharecapital").val(data.cosharecapital);
+
+                      $("#sharecapital").val(data.sharecapital);
+                      $("#totalregularloan").val(data.totalregularloan);
+                      $("#totalpettycashloan").val(data.totalpettycashloan);
+                      $("#totalemergencyloan").val(data.totalemergencyloan);
+                      $("#totalcommodityloan").val(data.totalcommodityloan);
+                      $("#totalotherstloan").val(data.totalotherstloan);
+                      $("#totalloans").val(data.totalloans);
+                      $("#totalloanable").val(data.totalloanable);
+                      $("#loanamount").val(data.loanamount);
+
+                      $("#priorloan").val(data.priorloan);
+                      $("#servicefee").val(data.servicefee);
+                      $("#retentionfee").val(data.retentionfee);
+                      $("#insurancefee").val(data.insurancefee);
+                      $("#totaldeductions").val(data.totaldeductions);
+                      $("#netproceeds").val(data.netproceeds);
+                      $("#interestpercent").val(data.interestpercent);
+                      $("#interestamount").val(data.interestamount);
+                      $("#totalinterest").val(data.totalinterest);
+                      $("#totalamount").val(data.totalamount);
+                      $("#monthlyamort").val(data.monthlyamort);
+
+                    },
+                    error: function(data){
+
+                    }
+                  });
+            });
+
+            setInterval(function(){
+                $('.datatable-selection-single').DataTable().ajax.reload();
+              },10000);
+            });
     </script>
+
 @endsection
 
 @section('content')
@@ -41,8 +168,8 @@
            <!--   <button class="btn-floating right waves-effect set-top-right" data-target="modal1" ><i class="material-icons right">add</i></button> -->
 
                 <img class="circle responsive-img round-img" src="../../images/placeholder/1280x853g.jpg" alt="placeholder">
-                <div class="card-title center">{{Auth::user()->name}}</div>
-                <div class="designation center grey-text text-darken-3">{{Auth::user()->designation}}</div>
+                <div class="card-title center">{{ucwords(Auth::user()->name)}}</div>
+                <div class="designation center grey-text text-darken-3">{{ucwords(Auth::user()->designation)}}</div>
 
                 <div class="socialization center">
                   <a class="waves-effect waves-light btn-large"  data-target="modal1"><i class="material-icons left">add</i>Apply new loan</a>
@@ -57,317 +184,269 @@
 
           </div>
         </div>
-      
-        <div id="modal2" class="modal modal-fixed-footer  ">
-                  <div class="modal-content" id="termsContent">
-                      <div class="col s12">
-                          <h5>Terms and Conditions for Company Name</h5>
+        <div class="col s12 mr-top-10">
+          <div id="modal1" class="modal auto modal-fixed-footer">
+             <form class="profile-info-form" enctype="multipart/form-data" role="form" id="forma">
+              {{ csrf_field() }}
+              <div class="modal-content">
+                  <div class="row">
+                      <div class="col s6">
+                          <div class="row box-title">
+                              <div class="col s12">
+                                  <h5>Profile Information</h5>
+                              </div>
+                          </div>
+                          <div class="row">
+                            <div class="input-field col m6 s12"><i class="material-icons prefix">calendar_today</i>
+                              <input type="text" class="validate datepicker" id="datefiling" name="datefiling" value='{{date("Y-m-d")}}' placeholder="Date" required >
+                              <label for="datefiling">Date of filing</label>
+                            </div>
+                            <div class="input-field col m6 s12"><i class="material-icons prefix">description</i>
+                              <select class="validate basic-select" name="loanstatus" id="loanstatus">
+                                <option value="" disabled selected>Select Loan Status</option>
+                                <option value="New Loan" selected>New loan</option>
+                                <option value="Renewal" selected>Renewal</option>
+                              </select>
+                              <label for="sex">Loan Status</label>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="input-field col m6 s12"><i class="material-icons prefix">date_range</i>
+                              <select class="validate basic-select" name="loanterms" id="loanterms">
+                                <option value="" disabled selected>Select Loan Terms</option>
+                                <option value="3" >Three(3) months</option>
+                                <option value="6" >Six(6) months</option>
+                                <option value="12" >Twelve(12) months</option>
+                                <option value="18" >Eigtheen(18) months</option>
+                                <option value="24" >Twenty-four(24) months</option>
+                                <option value="32" >Thirty-two(32) months</option>
+                                <option value="60" >Sixty(60) months</option>
+                              </select>
+                              <label for="sex">Terms of payment</label>
+                            </div>
+                            <div class="input-field col m6 s12"><i class="material-icons prefix">assignment</i>
+                              <select class="validate basic-select" name="loantype" id="loantype">
+                                <option value="" disabled selected>Select Loan Type</option>
+                                <option value="Petty Cash" >Petty Cash</option>
+                                <option value="Emergency" >Emergency</option>
+                                <option value="Travel" >Travel</option>
+                                <option value="Commodity" >Commodity</option>
+                                <option value="Regular" >Regular loan</option>
+                              </select>
+                              <label for="sex">Type of Loan</label>
+                            </div>
+                          </div> 
                       </div>
-                      <form name="callback" >
-                          Introduction
-                            These Website Standard Terms and Conditions written on this webpage shall manage your use of our website, Webiste Name accessible at Website.com.
-
-                            These Terms will be applied fully and affect to your use of this Website. By using this Website, you agreed to accept all terms and conditions written in here. You must not use this Website if you disagree with any of these Website Standard Terms and Conditions.
-
-                            Minors or people below 18 years old are not allowed to use this Website.
-
-                            Intellectual Property Rights
-                            Other than the content you own, under these Terms, Company Name and/or its licensors own all the intellectual property rights and materials contained in this Website.
-
-                            You are granted limited license only for purposes of viewing the material contained on this Website.
-
-                            Restrictions
-                            You are specifically restricted from all of the following:
-
-                            publishing any Website material in any other media;
-                            selling, sublicensing and/or otherwise commercializing any Website material;
-                            publicly performing and/or showing any Website material;
-                            using this Website in any way that is or may be damaging to this Website;
-                            using this Website in any way that impacts user access to this Website;
-                            using this Website contrary to applicable laws and regulations, or in any way may cause harm to the Website, or to any person or business entity;
-                            engaging in any data mining, data harvesting, data extracting or any other similar activity in relation to this Website;
-                            using this Website to engage in any advertising or marketing.
-                            Certain areas of this Website are restricted from being access by you and Company Name may further restrict access by you to any areas of this Website, at any time, in absolute discretion. Any user ID and password you may have for this Website are confidential and you must maintain confidentiality as well.
-
-                            Your Content
-                            In these Website Standard Terms and Conditions, “Your Content” shall mean any audio, video text, images or other material you choose to display on this Website. By displaying Your Content, you grant Company Name a non-exclusive, worldwide irrevocable, sub licensable license to use, reproduce, adapt, publish, translate and distribute it in any and all media.
-
-                            Your Content must be your own and must not be invading any third-party's rights. Company Name reserves the right to remove any of Your Content from this Website at any time without notice.
-
-                            No warranties
-                            This Website is provided “as is,” with all faults, and Company Name express no representations or warranties, of any kind related to this Website or the materials contained on this Website. Also, nothing contained on this Website shall be interpreted as advising you.
-
-                            Limitation of liability
-                            In no event shall Company Name, nor any of its officers, directors and employees, shall be held liable for anything arising out of or in any way connected with your use of this Website whether such liability is under contract.  Company Name, including its officers, directors and employees shall not be held liable for any indirect, consequential or special liability arising out of or in any way related to your use of this Website.
-
-                            Indemnification
-                            You hereby indemnify to the fullest extent Company Name from and against any and/or all liabilities, costs, demands, causes of action, damages and expenses arising in any way related to your breach of any of the provisions of these Terms.
-
-                            Severability
-                            If any provision of these Terms is found to be invalid under any applicable law, such provisions shall be deleted without affecting the remaining provisions herein.
-
-                            Variation of Terms
-                            Company Name is permitted to revise these Terms at any time as it sees fit, and by using this Website you are expected to review these Terms on a regular basis.
-
-                            Assignment
-                            The Company Name is allowed to assign, transfer, and subcontract its rights and/or obligations under these Terms without any notification. However, you are not allowed to assign, transfer, or subcontract any of your rights and/or obligations under these Terms.
-
-                            Entire Agreement
-                            These Terms constitute the entire agreement between Company Name and you in relation to your use of this Website, and supersede all prior agreements and understandings.
-
-                            Governing Law & Jurisdiction
-                            These Terms will be governed by and interpreted in accordance with the laws of the State of Country, and you submit to the non-exclusive jurisdiction of the state and federal courts located in Country for the resolution of any disputes.
-                      </form>
+                      <div class="col s6">
+                          <div class="row box-title">
+                              <div class="col s12">
+                                  <h5>Co-maker's Pledge</h5>
+                              </div>
+                          </div>
+                          <div class="row">
+                            <div class="input-field col s12"><i class="material-icons prefix">lock</i>
+                              <input class="validate" type="password" id="signaturekey2" name="signaturekey2" value="" placeholder="">
+                              <label for="signaturekey2">Signature key</label>
+                            </div>
+                          </div> 
+                          <div class="row">
+                            <div class="input-field col m7 s12"><i class="material-icons prefix">perm_identity</i>
+                              <input class="validate" type="text" id="coid" name="coid" value="" readonly />
+                              <label for="coid">Comaker's ID</label>
+                            </div>
+                            <div class="input-field col m5 s12"><i class="material-icons prefix">person</i>
+                              <input class="validate" type="text" id="coname" name="coname" value="" readonly />
+                              <label for="coname">Co-maker Name</label>
+                            </div>
+                          </div> 
+                          <div class="row">
+                            <div class="input-field col m7 s12"><i class="material-icons prefix">book</i>
+                              <input class="validate" type="text" id="copassbookno" name="copassbookno" value="" readonly />
+                              <label for="copassbookno">Passbook no.</label>
+                            </div>
+                            <div class="input-field col m5 s12"><i class="material-icons prefix"><span>&#8369;</span></i>
+                              <input class="validate" type="text" id="cosharecapital" name="cosharecapital" value="" readonly />
+                              <label for="cosharecapital">Amount of fixed deposit</label>
+                            </div>
+                          </div>
+                      </div>
                   </div>
-                  <div class="modal-footer">
-                      <a href="javascript:void(0);" class="modal-action modal-close waves-effect waves-green btn-flat">Close</a>
-                      
-                      <a href="javascript:void(0);" class="btn-flat" >Add</a>
+                  <div class="row ">
+                      <div class="col s12">
+                           <div class="card card-dash">
+                            <div class="card-header z-depth-2 primary-bg"><i class="material-icons left"><span>&#8369;</span></i><span class="caption">Loan Calculation</span>
+                            </div>
+                            <div class="card-content">
+                              <b>
+                              <div class="row" style="color: rgba(0, 0, 0, 0.87)">
+                                  <div class="col s12 m4">
+
+                                      <ul class="collection">
+                                        <li class="mr-top-10">
+                                            <div class="input-field col s12 m12">
+                                                    <input type="text" name="sharecapital" class="inputUSD right-align" value="{{(Auth::user()->sharecapital)*2}}" readonly/>
+                                                    <label for="sharecapitalx2">Share Capital x 2</label>
+                                            </div>
+                                        </li>
+                                        <li class="mr-top-10">
+                                          Loan Balances
+                                            <ol>
+                                                <li class="mr-top-10">
+                                                  <div class="input-field col s12 m6">
+                                                    <input type="text" name="totalregularloan" class="inputUSD right-align" value="{{Auth::user()->totalregularloan}}" readonly />
+                                                    <label for="totalregularloan">Regular Loan</label>
+                                                  </div>
+                                                
+                                                  <div class="input-field col s12 m6">
+                                                    <input type="text" name="totalpettycashloan" class="inputUSD right-align" value="{{Auth::user()->totalpettycashloan}}" readonly/>
+                                                    <label for="totalpettycashloan">Petty Cash Loan</label>
+                                                  </div>
+                                                </li>
+                                                <li class="mr-top-10">
+                                                  <div class="input-field col s12 m6">
+                                                    <input type="text" name="totalemergencyloan" class="inputUSD right-align" value="{{Auth::user()->totalemergencyloan}}" readonly/>
+                                                    <label for="totalemergencyloan">Emergency Loan</label>
+                                                  </div>
+                                                
+                                                  <div class="input-field col s12 m6">
+                                                    <input type="text" name="totalcommodityloan" class="inputUSD right-align" value="{{Auth::user()->totalcommodityloan}}" readonly/>
+                                                    <label for="totalcommodityloan">Commodity Loan</label>
+                                                  </div>
+                                                </li>
+                                                <li class="mr-top-10">
+                                                  <div class="input-field col s12 m6">
+                                                    <input type="text" name="otherstloan" class="inputUSD right-align" value="{{Auth::user()->otherstloan}}" readonly/>
+                                                    <label for="otherstloan">Travel Loan</label>
+                                                  </div>
+                                                </li>
+                                            </ol>
+                                        </li>
+                                        <li class="mr-top-10">
+                                          <div class="input-field col s12 m12">
+                                              <input type="text" name="totalloans" class="inputUSD right-align" value="{{(Auth::user()->totalcommodityloan + Auth::user()->totalregularloan + Auth::user()->totalpettycashloan + Auth::user()->totalemergencyloan)}}" readonly/>
+                                              <label for="inputUSD">Total Loans</label>
+                                          </div>
+                                        </li>
+                                        <li class="mr-top-10">
+                                          <div class="input-field col s12 m12">
+                                              <input type="text" name="totalloanable" class="inputUSD right-align" value="{{(Auth::user()->sharecapital)*2 - 100}}" readonly/>
+                                              <label for="inputUSD">Total Loanable Amount</label>
+                                          </div>
+                                        </li>
+                                      </ul>
+                                  </div>
+                                  <div class="col s12 m4">
+                                      <ul class="collection">
+                                        <li class="mr-top-10">
+                                          
+                                            <div class="input-field col s12"><i class="material-icons prefix"><span>&#8369;</span></i>
+                                              <input type="number" class="right-align validate" id="loanamount" name="loanamount" value="">
+                                              <label for="loanamount">Loan Amount</label>
+                                            </div>
+                                             <div class="input-field col s12"><i class="material-icons prefix">lock</i>
+                                              <input class="validate" type="password" id="signaturekey1" name="signaturekey1" value="">
+                                              <label for="signaturekey1">Signature key</label>
+                                            </div>
+                                        </li>
+                                        <li class="mr-top-10">
+                                          Deductions
+                                            <ol>
+                                                <li class="mr-top-10">
+                                                  <div class="input-field col s12 m6">
+                                                    <input type="text" name="priorloan" id="priorloan" class="validate inputUSD right-align" placeholder="" required readonly/>
+                                                    <label for="priorloan">Prior Loan</label>
+                                                  </div>
+                                                  <div class="input-field col s12 m6">
+                                                    <input type="text" name="servicefee" id="servicefee" class="inputUSD right-align" value="0.00" placeholder="" readonly/>
+                                                    <label for="servicefee">Service fee</label>
+                                                  </div>
+                                                  <div class="input-field col s12 m6">
+                                                    <input type="text" name="retentionfee" id="retentionfee" class="inputUSD right-align" value="0.00" placeholder="" readonly/>
+                                                    <label for="retentionfee">Retention fee</label>
+                                                  </div>
+                                                  <div class="input-field col s12 m6">
+
+                                                    <input type="text" name="insurancefee" id="insurancefee" class="inputUSD right-align" value="0.00" placeholder="" readonly/>
+                                                    <label for="insurancefee">* Isurance fee</label>
+                                                  </div>
+                                                </li>
+                                            </ol>
+                                            
+                                        </li>
+                                        <li class="mr-top-10">
+                                          <div class="input-field col s12 m12">
+                                            <input type="text" name="totaldeductions" id="totaldeductions" class="inputUSD right-align" value="0.00" placeholder="" readonly/>
+                                            <label for="totaldeductions">Total Deductions</label>
+                                          </div>
+                                        </li>
+                                        <li class="mr-top-10">
+                                          <div class="input-field col s12 m12">
+                                            <input type="text" name="netproceeds" id="netproceeds" class="inputUSD right-align small" value="0.00" placeholder="" readonly/>
+                                            <label for="netproceeds">Net Proceeds</label>
+                                          </div>
+                                        </li>
+                                      </ul>
+                                  </div>
+                                  <div class="col s12 m4">
+                                      <ul class="collection">
+                                        <li class="mr-top-10">
+                                          Interest per month
+                                            <ol>
+                                                <li class="mr-top-10">
+                                                   <div class="input-field col s12 m6">
+                                                      <input type="text" name="interestpercent" id="interestpercent" class="inputUSD right-align" value="0" placeholder="" readonly/>
+                                                      <label for="interestpercent">Percent (%)</label>
+                                                  </div>
+                                                  <div class="input-field col s12 m6">
+                                                      <input type="text" name="interestamount" id="interestamount" class="inputUSD right-align" value="0" placeholder="" readonly/>
+                                                      <label for="interestamount">Amount</label>
+                                                  </div>
+                                                </li>
+                                            </ol>
+                                        </li>
+                                        <li class="mr-top-10">
+                                          <div class="input-field col s12 m12">
+                                              <input type="text" name="totalinterest" id="totalinterest" class="inputUSD right-align" value="0" placeholder="" readonly/>
+                                              <label for="totalinterest">Total Interest</label>
+                                          </div>
+                                        </li>
+                                        <li class="mr-top-10">
+                                          <div class="input-field col s12 m12">
+                                              <input type="text" name="totalamount" id="totalamount" class="inputUSD right-align" value="0" placeholder="" readonly/>
+                                              <label for="totalamount">Total Amount</label>
+                                          </div>
+                                        </li>
+                                        <li class="mr-top-10">
+                                          <div class="input-field col s12 m12">
+                                              <input type="text" name="monthlyamort" id="monthlyamort" class="inputUSD right-align" value="0" placeholder="" readonly/>
+                                              <label for="monthlyamort">Monthly Amortization</label>
+                                          </div>
+                                        </li>
+                                      </ul>
+                                  </div>
+                              </div>
+                            
+                            </div>
+                            
+                          </div>
+                      </div>
                   </div>
               </div>
-        <div class="col s12 mr-top-10">
-
-                <div id="modal1" class="modal auto modal-fixed-footer">
-                  <form class="profile-info-form" method="post" action="" id="forma">
-                    <div class="modal-content">
-                        <div class="row">
-                            <div class="col s6">
-                                <div class="row box-title">
-                                    <div class="col s12">
-                                        <h5>Profile Information</h5>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                  <div class="input-field col m6 s12"><i class="material-icons prefix">calendar_today</i>
-                                    <input type="date" class="validate datepicker pck-primary pck-darken-*" id="datefiling" name="datefiling" value="" required />
-                                    <label for="datefiling">Date of filing</label>
-                                  </div>
-                                  <div class="input-field col m6 s12"><i class="material-icons prefix">description</i>
-                                    <select class="basic-select" name="loanstatus" id="loanstatus">
-                                      <option value="" disabled selected>Select Loan Status</option>
-                                      <option value="New Loan" selected>New loan</option>
-                                      <option value="Renewal" selected>Renewal</option>
-                                    </select>
-                                    <label for="sex">Loan Status</label>
-                                  </div>
-                                </div>
-                                <div class="row">
-                                  <div class="input-field col m6 s12"><i class="material-icons prefix">date_range</i>
-                                    <select class="basic-select" name="loanterms" id="loanterms">
-                                      <option value="" disabled selected>Select Loan Terms</option>
-                                      <option value="3" selected>Three(3) months</option>
-                                    </select>
-                                    <label for="sex">Terms of payment</label>
-                                  </div>
-                                  <div class="input-field col m6 s12"><i class="material-icons prefix">assignment</i>
-                                    <select class="basic-select" name="loantype" id="loantype">
-                                      <option value="" disabled selected>Select Loan Status</option>
-                                      <option value="MALE" selected>Regular loan</option>
-                                    </select>
-                                    <label for="sex">Type of Loan</label>
-                                  </div>
-                                </div> 
-                                <div class="row">
-                                  <div class="input-field col s12"><i class="material-icons prefix">lock</i>
-                                    <input class="validate" type="text" id="signaturekey1" name="signaturekey1" value="">
-                                    <label for="signaturekey1">Signature key</label>
-                                  </div>
-                                </div> 
-                              <!--   <div class="row">
-                                    <div class="input-field col s12">
-                                        <input type="checkbox" id="filled-in" class="filled-in"/>
-                                        <label for="filled-in">Accept terms and agreement</label>
-                                    </div>
-                                </div> -->
-                            </div>
-                            <div class="col s6">
-                                <div class="row box-title">
-                                    <div class="col s12">
-                                        <h5>Co-maker's Pledge</h5>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                  <div class="input-field col s12"><i class="material-icons prefix">lock</i>
-                                    <input class="validate" type="text" id="signaturekey2" name="signaturekey2" value="">
-                                    <label for="signaturekey2">Signature key</label>
-                                  </div>
-                                </div> 
-                                <div class="row">
-                                  <div class="input-field col m7 s12"><i class="material-icons prefix">perm_identity</i>
-                                    <input class="validate" type="email" id="coid" name="comakersid" disabled="" value="">
-                                    <label for="coid">Comaker's ID</label>
-                                  </div>
-                                  <div class="input-field col m5 s12"><i class="material-icons prefix">person</i>
-                                    <input class="validate" type="text" id="coname" name="coname" value="" disabled="">
-                                    <label for="coname">Co-maker Name</label>
-                                  </div>
-                                </div> 
-                                <div class="row">
-                                  <div class="input-field col m7 s12"><i class="material-icons prefix">book</i>
-                                    <input class="validate" type="text" id="copassbookno" name="copassbookno" value="" disabled="">
-                                    <label for="email">Passbook no.</label>
-                                  </div>
-                                  <div class="input-field col m5 s12"><i class="material-icons prefix"><span>&#8369;</span></i>
-                                    <input class="validate" type="email" id="email" name="email" value="" disabled="">
-                                    <label for="email">Amount of fixed deposit</label>
-                                  </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row ">
-                            <div class="col s12">
-                                 <div class="card card-dash">
-                                  <div class="card-header z-depth-2 primary-bg"><i class="material-icons left"><span>&#8369;</span></i><span class="caption">Loan Calculation</span>
-                                  </div>
-                                  <div class="card-content">
-                                    <b>
-                                    <div class="row" style="color: rgba(0, 0, 0, 0.87)">
-                                        <div class="col s12 m4">
-
-                                            <ul class="collection">
-                                              <li class="mr-top-10">
-                                                  <div class="input-field col s12 m12">
-                                                          <input type="number" name="sharecapitalx2" class="inputUSD right-align" value="{{(Auth::user()->sharecapital)*2}}"/>
-                                                          <label for="sharecapitalx2">Share Capital x 2</label>
-                                                  </div>
-                                              </li>
-                                              <li class="mr-top-10">
-                                                Loan Balances
-                                                  <ol>
-                                                      <li class="mr-top-10">
-                                                        <div class="input-field col s12 m12">
-                                                          <input type="number" name="totalregularloan" class="inputUSD right-align" value="{{Auth::user()->totalregularloan}}" readonly />
-                                                          <label for="totalregularloan">Regular Loan</label>
-                                                        </div>
-                                                      </li>
-                                                      <li class="mr-top-10">
-                                                        <div class="input-field col s12 m12">
-                                                          <input type="number" name="totalpettycashloan" class="inputUSD right-align" value="{{Auth::user()->totalpettycashloan}}" readonly/>
-                                                          <label for="totalpettycashloan">Petty Cash Loan</label>
-                                                        </div>
-                                                      </li>
-                                                      <li class="mr-top-10">
-                                                        <div class="input-field col s12 m12">
-                                                          <input type="number" name="totalemergencyloan" class="inputUSD right-align" value="{{Auth::user()->totalemergencyloan}}" readonly/>
-                                                          <label for="totalemergencyloan">Emergency Loan</label>
-                                                        </div>
-                                                      </li>
-                                                      <li class="mr-top-10">
-                                                        <div class="input-field col s12 m12">
-                                                          <input type="number" name="totalcommodityloan" class="inputUSD right-align" value="{{Auth::user()->totalcommodityloan}}" readonly/>
-                                                          <label for="totalcommodityloan">Commodity Loan</label>
-                                                        </div>
-                                                      </li>
-                                                  </ol>
-                                              </li>
-                                              <li class="mr-top-10">
-                                                <div class="input-field col s12 m12">
-                                                    <input type="number" name="totalloans" class="inputUSD right-align" value="{{(Auth::user()->totalcommodityloan + Auth::user()->totalregularloan + Auth::user()->totalpettycashloan + Auth::user()->totalemergencyloan)}}" readonly/>
-                                                    <label for="inputUSD">Total Loans</label>
-                                                </div>
-                                              </li>
-                                              <li class="mr-top-10">
-                                                <div class="input-field col s12 m12">
-                                                    <input type="number" name="totalloanable" class="inputUSD right-align" value="{{(Auth::user()->sharecapital)*2 - 100}}" readonly/>
-                                                    <label for="inputUSD">Total Loanable Amount</label>
-                                                </div>
-                                              </li>
-                                            </ul>
-                                        </div>
-                                        <div class="col s12 m4">
-                                            <ul class="collection">
-                                              <li class="mr-top-10">
-                                                
-                                                  <div class="input-field col s12"><i class="material-icons prefix"><span>&#8369;</span></i>
-                                                    <input type="number" class="inputUSD right-align validate" id="loanamount" name="loanamount" value="">
-                                                    <label for="loanamount">Amount in figures</label>
-                                                  </div>
-                                              
-                                              </li>
-                                              <li class="collection-item">
-                                                Loan Balances
-                                                  <ol>
-                                                      <li class="mr-top-10">Amount <span class="right"><span>&#8369;</span> 12,000</span></li>
-                                                  </ol>
-                                                  Insurance Fee
-                                                  <ol>
-                                                      <li class="mr-top-10">Amount <span class="right"><span>&#8369;</span> 12,000</span></li>
-                                                  </ol>
-                                                  Service Fee
-                                                  <ol>
-                                                      <li class="mr-top-10">Amount <span class="right"><span>&#8369;</span> 12,000</span></li>
-                                                  </ol>
-
-                                              </li>
-                                              <li class="collection-item">Total Deductions<span class="right"> <span>&#8369;</span>12,000</span></li>
-                                              <li class="collection-item">Net Loan Proceeds<span class="right"> <span>&#8369;</span>12,000</span></li>
-                                            </ul>
-                                        </div>
-                                        <div class="col s12 m4">
-                                            <ul class="collection">
-                                              <li class="collection-item">Loan Amount <span class="right"><span>&#8369;</span> 12,000</span></li>
-                                              <li class="collection-item">
-                                                Loan Balances
-                                                  <ol>
-                                                      <li class="mr-top-10">Terms of Payment(Months) <span class="right"> 12</span></li>
-                                                  </ol>
-                                              </li>
-                                              <li class="collection-item">
-                                                Interest per month
-                                                  <ol>
-                                                      <li class="mr-top-10">Percent(%) <span class="right"> 12</span></li>
-                                                      <li class="mr-top-10">Amount <span class="right"><span>&#8369;</span> 1200</span></li>
-                                                  </ol>
-                                              </li>
-                                              <li class="collection-item">Total Interest Income <span class="right"> 1200</span></li>
-                                              <li class="collection-item">Total Amount <span class="right"><span>&#8369;</span> 1200</span></li>
-                                              <li class="collection-item">Monthly Amortization <span class="right"><span>&#8369;</span> 1200</span></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                  </b>
-                                  </div>
-                                  
-                                </div>
-                            </div>
-                            <!-- <div class="col s12 m4">
-                                 <div class="card card-dash">
-                                  <div class="card-header z-depth-2 primary-bg"><i class="material-icons left">face</i><span class="caption"><a style="color: white" href="#"> Pending Loan List</a></span>
-                                  </div>
-                                  <div class="card-content">
-
-                                  </div>
-                                  
-                                </div>
-                            </div>
-                            <div class="col s12 m4">
-                                 <div class="card card-dash">
-                                      <div class="card-header z-depth-2 primary-bg"><i class="material-icons left">face</i><span class="caption"><a style="color: white" href="#"> Pending Loan List</a></span> 
-                                      </div>
-                                      <div class="card-content">
-
-                                      </div>
-                                      
-                                    </div>
-                            </div> -->
-                           
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                                        <input type="checkbox" id="filled-in" class="filled-in"/>
-                                        <label for="filled-in">Accept terms and agreement </label>
-                                    
-                        <button class="btn waves-effect waves-set" type="submit" name="update_profile">Save<i class="material-icons right">save</i>
-                                </button>
-                    </div>
-                  </form>
-                </div>
+              <div class="modal-footer">
+                  <input type="checkbox" id="filled-in" class="filled-in"/>
+                  <label for="filled-in">Accept terms and agreement </label>
+                              
+                  <button class="btn waves-effect waves-set" type="submit" id="process" >Save<i class="material-icons right">save</i>
+                  </button>
+              </div>
+            </form>
+          </div>
    
 
              <div class="col s12 m12 l12">
 
 
-               <div class="col s12 m3">
+               <div class="col s12 m4">
             <div class="card horizontal">
                 <div class="card-image valign-wrapper pad-lr-20">
                     <i class="material-icons medium valign primary-text">account_balance_wallet</i>
@@ -380,7 +459,7 @@
                 </div>
             </div>
         </div>
-        <div class="col s12 m3">
+        <div class="col s12 m4">
             <div class="card horizontal">
                 <div class="card-image valign-wrapper pad-lr-20">
                     <i class="material-icons medium valign secondary-text">calendar_today</i>
@@ -393,7 +472,7 @@
                 </div>
             </div>
         </div>
-        <div class="col s12 m3">
+        <div class="col s12 m4">
             <div class="card horizontal">
                 <div class="card-image valign-wrapper pad-lr-20">
                     <i class="material-icons medium valign warning-text">assignment</i>
@@ -406,19 +485,7 @@
                 </div>
             </div>
         </div>
-        <div class="col s12 m3">
-            <div class="card horizontal">
-                <div class="card-image valign-wrapper pad-lr-20">
-                    <i class="material-icons medium valign warning-text">assignment</i>
-                </div>
-                <div class="card-stacked">
-                    <div class="card-content right-align">
-                        <div class="card-title" style="font-weight:bold;">56  </div>
-                        <p>Total Application</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
                   <!-- <main class="animated"> -->
                       <ul class="dropdown-content action-ex-opts" id="generalDropDown">
                         <li><a class="waves-effect waves-set" href="#"><i class="material-icons">account_box</i><span>Account</span></a></li>
@@ -440,7 +507,7 @@
                                     <ul class="tabs user-profile-tabs">
                                       <li class="tab col s3"><a href="#about"> Loans</a></li>
                                       <li class="tab col s3"><a href="#userProfileSettings">Profile</a></li>
-                                      <li class="tab col s3"><a class="load-fullcalendar" href="#history">Loan history</a></li>
+                                      <!-- <li class="tab col s3"><a class="load-fullcalendar" href="#history"></a></li> -->
                                       <li class="tab col s3"><a class="load-fullcalendar" href="#ledger">Loan ledger</a></li>
                                     </ul>
                                     <div id="about">
@@ -448,28 +515,18 @@
                                         <div class="col s12">
                                           <div class="card-panel">
                                             <div class="datatable-wrapper black-text">
-                                              <table cellspacing="0" width="100%" id="memberslist" class="responsive-table datatable-selection-single display cell-border">
+                                              <table cellspacing="0" width="100%" id="loanapplicationlist" class="responsive-table datatable-selection-single display cell-border">
                                                   <thead>
                                                       <tr>
                                                           <th>Ref no.</th>
-                                                          <th>Ref</th>
-                                                          <th>Position</th>
+                                                          <th>Name</th>
+                                                          <th>Loan Amount</th>
                                                           <th>Remarks</th>
                                                           <th>Actions</th>
                                                       </tr>
                                                   </thead>
                                                   <tbody>
-                                                      <tr>
-                                                            <td></td>
-                                                            <td>Tiger Nixon</td>
-                                                            <td>2011/04/25</td>
-                                                            <td>$320,800</td>
-                                                            <td>
-                                                                <div class="action-btns">
-                                                                     <button class="btn-floating waves-effect waves-light" data-target="modal2" ><i class="material-icons">person</i></button>
-                                                                </div>
-                                                             </td>
-                                                          </tr>
+                                                     
                                                   </tbody>
                                               </table>
                                             </div>
@@ -549,33 +606,9 @@
                                               </div>
                                             </div>
                                           </div>
-                                        </form>
                                       </div>
                                     </div>
-                                    <div id="history">
-                                      <div class="row">
-                                        <div class="card-panel">
-                                            <h4 class="card-title">Work Experience<i class="material-icons left">work</i>
-                                            </h4>
-                                            <div class="card-contents">
-                                              <div class="experience-list-item">
-                                                <h5 class="work-title grey-text text-darken-2">CEO @Thoriseum</h5><span class="work-duration">Jan 2015 - Mar 2016</span>
-                                                <p class="word-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                                                <div class="divider"></div>
-                                              </div>
-                                              <div class="experience-list-item">
-                                                <h5 class="work-title grey-text text-darken-2">CEO @Thoriseum</h5><span class="work-duration">Jan 2015 - Mar 2016</span>
-                                                <p class="word-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                                                <div class="divider"></div>
-                                              </div>
-                                              <div class="experience-list-item">
-                                                <h5 class="work-title grey-text text-darken-2">CEO @Thoriseum</h5><span class="work-duration">Jan 2015 - Mar 2016</span>
-                                                <p class="word-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                                              </div>
-                                            </div>
-                                          </div>
-                                      </div>
-                                    </div>
+                            
                                     <div id="ledger">
                                       <div class="row">
                                         <div class="card-panel">
@@ -613,14 +646,4 @@
 </div>
 
 
-@endsection
-
-@section('jsPostApp')
-    
-    <script type="text/javascript">
-      alert('asdf')
-        $('#filled-in').click(function() {
-           alert('asd');
-        });
-    </script>
 @endsection
